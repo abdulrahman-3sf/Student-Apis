@@ -11,19 +11,35 @@ namespace StudentAPI.Controllers
     public class StudentAPIController : ControllerBase
     {
         [HttpGet("All", Name = "GetAllStudents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<Student>> GetAllStudents()
         {
+            if (StudentRepository.StudentList.Count == 0)
+                return NotFound("No Students Found!");
+
             return Ok(StudentRepository.StudentList);
         }
 
         [HttpGet("Passed", Name = "GetPassedStudents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<Student>> GetPassedStudents()
         {
+            if (StudentRepository.StudentList.Count == 0)
+                return NotFound("No Students Found!");
+
             var passedStudents = StudentRepository.StudentList.Where(student => student.Grade >= 50).ToList();
+
+            if (passedStudents.Count == 0)
+                return NotFound("No Passed Students Found!");
+
             return Ok(passedStudents);
         }
 
         [HttpGet("AverageGrades", Name = "GetAverageGrades")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<double> GetAverageGrades()
         {
             if (StudentRepository.StudentList.Count == 0)
