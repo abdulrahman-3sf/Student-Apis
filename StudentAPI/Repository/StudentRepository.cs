@@ -2,7 +2,7 @@
 
 namespace StudentAPI.Repository
 {
-    public class StudentReopsitory
+    public class StudentRepository
     {
         public static List<Student> StudentList = new List<Student>
         {

@@ -19,6 +19,8 @@ namespace StudentAPIClient
             await GetAllStudents();
 
             await GetPassedStudents();
+
+            await GetAverageGrades();
         }
 
         static async Task GetAllStudents()
@@ -52,6 +54,23 @@ namespace StudentAPIClient
                 if (students != null)
                     foreach (var student in students)
                         Console.WriteLine($"ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
+        }
+
+        static async Task GetAverageGrades()
+        {
+            try
+            {
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine("\nFetching Students Average Grades..\n");
+
+                var averageGrades = await httpClient.GetFromJsonAsync<float>("AverageGrades");
+
+                Console.WriteLine("Average Grades: " + averageGrades);
             }
             catch (Exception ex)
             {
