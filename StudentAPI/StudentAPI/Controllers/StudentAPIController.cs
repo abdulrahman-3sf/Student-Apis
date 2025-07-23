@@ -83,9 +83,7 @@ namespace StudentAPI.Controllers
             if (student == null)
                 return NotFound($"Student with ID {ID} not found!");
 
-            StudentDTO sDTO = student.sDTO;
-
-            return Ok(sDTO);
+            return Ok(student.sDTO);
         }
 
         [HttpPost("AddNewStudent", Name = "AddNewStudent")]
@@ -129,12 +127,13 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<StudentAPI.Model.Student> UpdateStudent(int ID, StudentAPI.Model.Student updatedStudent)
+        public ActionResult<StudentDTO> UpdateStudent(int ID, StudentDTO updatedStudent)
         {
             if (ID < 1 || updatedStudent == null || string.IsNullOrEmpty(updatedStudent.Name) || updatedStudent.Age < 0 || updatedStudent.Grade < 0)
                 return BadRequest("Invalid Student Data!");
 
-            var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+            // var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+            StudentAPIBusinessLayer.Student student = StudentAPIBusinessLayer.Student.Find(ID);
 
             if (student == null)
                 return NotFound($"Student with ID {ID} not found!");
@@ -143,7 +142,9 @@ namespace StudentAPI.Controllers
             student.Age = updatedStudent.Age;
             student.Grade = updatedStudent.Grade;
 
-            return Ok(student);
+            student.Save();
+
+            return Ok(student.sDTO);
         }
     }
 }

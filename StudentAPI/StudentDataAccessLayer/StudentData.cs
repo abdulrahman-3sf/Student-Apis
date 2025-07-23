@@ -156,5 +156,25 @@ namespace StudentDataAccessLayer
                 }
             }
         }
+
+        public static bool UpdateStudent(StudentDTO sDTO)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                using (SqlCommand command = new SqlCommand("SP_UpdateStudent", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Name", sDTO.Name);
+                    command.Parameters.AddWithValue("@Age", sDTO.Age);
+                    command.Parameters.AddWithValue("@Grade", sDTO.Grade);
+                    command.Parameters.AddWithValue("@StudentID", sDTO.ID);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+
+                    return true;
+                }
+            }
+        }
     }
 }

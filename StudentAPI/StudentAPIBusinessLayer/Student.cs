@@ -35,6 +35,11 @@ namespace StudentAPIBusinessLayer
             return (ID != -1);
         }
 
+        private bool _UpdateStudent()
+        {
+            return StudentData.UpdateStudent(sDTO); ;
+        }
+
         public static List<StudentDTO> GetAllStudents()
         {
             return StudentData.GetAllStudents();
@@ -73,6 +78,9 @@ namespace StudentAPIBusinessLayer
                     }
                     else
                         return false;
+
+                case enMode.Update:
+                    return _UpdateStudent();
 
                 default:
                     return false;
