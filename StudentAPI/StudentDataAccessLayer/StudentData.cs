@@ -176,5 +176,23 @@ namespace StudentDataAccessLayer
                 }
             }
         }
+
+        public static bool DeleteStudent(int ID)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                using (SqlCommand command = new SqlCommand("SP_DeleteStudent", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@StudentID", ID);
+
+                    connection.Open();
+
+                    int rowsAffected = (int)command.ExecuteScalar();
+
+                    return (rowsAffected == 1);
+                }
+            }
+        }
     }
 }

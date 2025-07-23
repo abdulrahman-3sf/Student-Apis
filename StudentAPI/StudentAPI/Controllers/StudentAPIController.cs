@@ -109,18 +109,22 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<StudentAPI.Model.Student> DeleteStudent(int ID)
+        public ActionResult DeleteStudent(int ID)
         {
             if (ID < 1)
                 return BadRequest($"Not Accepted ID {ID}");
 
-            var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+            // var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+            //if (student == null)
+            //    return NotFound($"Student with ID {ID} not found!");
 
-            if (student == null)
+            //StudentRepository.StudentList.Remove(student);
+            //return Ok($"Student with ID {ID} has been deleted!");
+
+            if (StudentAPIBusinessLayer.Student.DeleteStudent(ID))
+                return Ok($"Student with ID {ID} has been deleted!");
+            else
                 return NotFound($"Student with ID {ID} not found!");
-
-            StudentRepository.StudentList.Remove(student);
-            return Ok($"Student with ID {ID} has been deleted!");
         }
 
         [HttpPut("{ID}", Name = "UpdateStudent")]
