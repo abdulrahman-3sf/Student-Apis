@@ -33,17 +33,24 @@ namespace StudentAPI.Controllers
         [HttpGet("Passed", Name = "GetPassedStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<StudentAPI.Model.Student>> GetPassedStudents()
+        public ActionResult<IEnumerable<StudentDTO>> GetPassedStudents()
         {
-            if (StudentRepository.StudentList.Count == 0)
+            //if (StudentRepository.StudentList.Count == 0)
+            //    return NotFound("No Students Found!");
+
+            //var passedStudents = StudentRepository.StudentList.Where(student => student.Grade >= 50).ToList();
+
+            //if (passedStudents.Count == 0)
+            //    return NotFound("No Passed Students Found!");
+
+            //return Ok(passedStudents);
+
+            List<StudentDTO> PassedStudentsList = StudentAPIBusinessLayer.Student.GetPassedStudents();
+
+            if (PassedStudentsList.Count == 0)
                 return NotFound("No Students Found!");
 
-            var passedStudents = StudentRepository.StudentList.Where(student => student.Grade >= 50).ToList();
-
-            if (passedStudents.Count == 0)
-                return NotFound("No Passed Students Found!");
-
-            return Ok(passedStudents);
+            return Ok(PassedStudentsList);
         }
 
         [HttpGet("AverageGrades", Name = "GetAverageGrades")]
@@ -51,11 +58,14 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<double> GetAverageGrades()
         {
-            if (StudentRepository.StudentList.Count == 0)
-                return NotFound("No Students Found!");
+            //if (StudentRepository.StudentList.Count == 0)
+            //    return NotFound("No Students Found!");
 
-            var averageGrades = StudentRepository.StudentList.Average(student => student.Grade);
-            return Ok(averageGrades);
+            //var averageGrades = StudentRepository.StudentList.Average(student => student.Grade);
+            //return Ok(averageGrades);
+
+            double averageGrade = StudentAPIBusinessLayer.Student.GetAverageGrade();
+            return Ok(averageGrade);
         }
 
         [HttpGet("{ID}", Name = "GetStudentByID")]

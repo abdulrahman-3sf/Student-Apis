@@ -53,5 +53,57 @@ namespace StudentDataAccessLayer
 
             return StudentsList;
         }
+
+        public static List<StudentDTO> GetPassedStudents()
+        {
+            var PassedStudentsList = new List<StudentDTO>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                using (SqlCommand command = new SqlCommand("SP_GetPassedStudents", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            PassedStudentsList.Add(new StudentDTO(
+                                reader.GetInt32(reader.GetOrdinal("Id")),
+                                reader.GetString(reader.GetOrdinal("Name")),
+                                reader.GetInt32(reader.GetOrdinal("Age")),
+                                reader.GetInt32(reader.GetOrdinal("Grade"))
+                            ));
+                        }
+                    }
+                }
+            }
+
+            return PassedStudentsList;
+        }
+
+        public static double GetAverageGrade()
+        {
+            double averageGrade = 0;
+
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                using (SqlCommand command = new SqlCommand("SP_GetAverageGrade", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    object result = command.ExecuteScalar();
+
+                    if (result != DBNull.Value)
+                        averageGrade = Convert.ToDouble(result);
+                }
+            }
+
+            return averageGrade;
+        }
     }
 }
