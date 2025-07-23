@@ -25,6 +25,9 @@ namespace StudentAPIClient
             await GetStudentByID(1);
             await GetStudentByID(44);
             await GetStudentByID(-1);
+
+            var newStudent = new Student { Name = "Saad", Age = 21, Grade = 66 };
+            await AddNewStudent(newStudent);
         }
 
         static async Task GetAllStudents()
@@ -103,6 +106,32 @@ namespace StudentAPIClient
 
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                     Console.WriteLine($"Bad Request: Not accepted {ID} ID");
+
+                else
+                    Console.WriteLine($"Something Wrong! Status Code ERROR: " + response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
+        }
+
+        static async Task AddNewStudent(Student newStudent)
+        {
+            try
+            {
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine("\nAdding New Student..\n");
+
+                var response = await httpClient.PostAsJsonAsync("AddNewStudent", newStudent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var addedStudent = await response.Content.ReadFromJsonAsync<Student>();
+                    Console.WriteLine($"Added Student Data | ID: {addedStudent.ID}, Name: {addedStudent.Name}, Age: {addedStudent.Age}, Grade: {addedStudent.Grade}");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    Console.WriteLine("Bad Request: Invalid Student Data.");
 
                 else
                     Console.WriteLine($"Something Wrong! Status Code ERROR: " + response.StatusCode);
