@@ -32,5 +32,22 @@ namespace StudentAPI.Controllers
             var averageGrades = StudentRepository.StudentList.Average(student => student.Grade);
             return Ok(averageGrades);
         }
+
+        [HttpGet("{ID}", Name = "GetStudentByID")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Student> GetStudentByID(int ID)
+        {
+            if (ID < 1)
+                return BadRequest($"Not Accepted ID {ID}");
+
+            var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+
+            if (student == null)
+                return NotFound($"Student with ID {ID} not found!");
+
+            return Ok(student);
+        }
     }
 }

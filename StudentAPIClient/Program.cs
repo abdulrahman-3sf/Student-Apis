@@ -21,6 +21,10 @@ namespace StudentAPIClient
             await GetPassedStudents();
 
             await GetAverageGrades();
+
+            await GetStudentByID(1);
+            await GetStudentByID(44);
+            await GetStudentByID(-1);
         }
 
         static async Task GetAllStudents()
@@ -71,6 +75,37 @@ namespace StudentAPIClient
                 var averageGrades = await httpClient.GetFromJsonAsync<float>("AverageGrades");
 
                 Console.WriteLine("Average Grades: " + averageGrades);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
+        }
+
+        static async Task GetStudentByID(int ID)
+        {
+            try
+            {
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine($"\nFetching Student with {ID} ID..\n");
+
+                var response = await httpClient.GetAsync($"{ID}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var student = await response.Content.ReadFromJsonAsync<Student>();
+
+                    if (student != null)
+                        Console.WriteLine($"ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    Console.WriteLine($"Not Found: Student with {ID} ID not found.");
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    Console.WriteLine($"Bad Request: Not accepted {ID} ID");
+
+                else
+                    Console.WriteLine($"Something Wrong! Status Code ERROR: " + response.StatusCode);
             }
             catch (Exception ex)
             {
