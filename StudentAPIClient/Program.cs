@@ -28,6 +28,8 @@ namespace StudentAPIClient
 
             var newStudent = new Student { Name = "Saad", Age = 21, Grade = 66 };
             await AddNewStudent(newStudent);
+
+            await DeleteStudent(3);
         }
 
         static async Task GetAllStudents()
@@ -90,7 +92,7 @@ namespace StudentAPIClient
             try
             {
                 Console.WriteLine("-------------------------------");
-                Console.WriteLine($"\nFetching Student with {ID} ID..\n");
+                Console.WriteLine($"\nFetching Student with ID {ID}..\n");
 
                 var response = await httpClient.GetAsync($"{ID}");
 
@@ -102,10 +104,10 @@ namespace StudentAPIClient
                         Console.WriteLine($"ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    Console.WriteLine($"Not Found: Student with {ID} ID not found.");
+                    Console.WriteLine($"Not Found: Student with ID {ID} not found.");
 
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                    Console.WriteLine($"Bad Request: Not accepted {ID} ID");
+                    Console.WriteLine($"Bad Request: Not accepted ID {ID}");
 
                 else
                     Console.WriteLine($"Something Wrong! Status Code ERROR: " + response.StatusCode);
@@ -132,6 +134,33 @@ namespace StudentAPIClient
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                     Console.WriteLine("Bad Request: Invalid Student Data.");
+
+                else
+                    Console.WriteLine($"Something Wrong! Status Code ERROR: " + response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
+        }
+
+        static async Task DeleteStudent(int ID)
+        {
+            try
+            {
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine($"\nDeleting student with ID {ID}..\n");
+
+                var response = await httpClient.DeleteAsync($"{ID}");
+
+                if (response.IsSuccessStatusCode)
+                    Console.WriteLine($"Student with ID {ID} has been deleted.");
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    Console.WriteLine($"Not Found: Student with ID {ID} not found.");
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    Console.WriteLine($"Bad Request: Not accepted ID {ID}");
 
                 else
                     Console.WriteLine($"Something Wrong! Status Code ERROR: " + response.StatusCode);
