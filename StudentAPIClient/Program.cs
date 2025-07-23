@@ -30,6 +30,9 @@ namespace StudentAPIClient
             await AddNewStudent(newStudent);
 
             await DeleteStudent(3);
+
+            var updatedStudent = new Student { Name = "Omar", Age = 22, Grade = 100 };
+            await UpdateStudent(1, updatedStudent);
         }
 
         static async Task GetAllStudents()
@@ -168,6 +171,34 @@ namespace StudentAPIClient
             catch (Exception ex)
             {
                 Console.WriteLine("ERROR: " + ex.Message);
+            }
+        }
+
+        static async Task UpdateStudent(int ID, Student updatedStudent)
+        {
+            try
+            {
+                Console.WriteLine("\n_____________________________");
+                Console.WriteLine($"\nUpdating student with ID {ID}..\n");
+
+                var response = await httpClient.PutAsJsonAsync($"{ID}", updatedStudent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var student = await response.Content.ReadFromJsonAsync<Student>();
+
+                    Console.WriteLine($"Updated Student Data | ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    Console.WriteLine($"Student with ID {ID} not found.");
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    Console.WriteLine("Failed to update student: Invalid data.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
     }

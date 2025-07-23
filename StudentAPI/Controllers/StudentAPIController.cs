@@ -98,5 +98,26 @@ namespace StudentAPI.Controllers
             StudentRepository.StudentList.Remove(student);
             return Ok($"Student with ID {ID} has been deleted!");
         }
+
+        [HttpPut("{ID}", Name = "UpdateStudent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Student> UpdateStudent(int ID, Student updatedStudent)
+        {
+            if (ID < 1 || updatedStudent == null || string.IsNullOrEmpty(updatedStudent.Name) || updatedStudent.Age < 0 || updatedStudent.Grade < 0)
+                return BadRequest("Invalid Student Data!");
+
+            var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+
+            if (student == null)
+                return NotFound($"Student with ID {ID} not found!");
+
+            student.Name = updatedStudent.Name;
+            student.Age = updatedStudent.Age;
+            student.Grade = updatedStudent.Grade;
+
+            return Ok(student);
+        }
     }
 }
