@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Azure.Core;
 using StudentDataAccessLayer;
 
 namespace StudentAPIBusinessLayer
@@ -27,6 +28,13 @@ namespace StudentAPIBusinessLayer
             this.Mode = Mode;
         }
 
+        private bool _AddNewStudent()
+        {
+            this.ID = StudentData.AddNewStudent(sDTO);
+
+            return (ID != -1);
+        }
+
         public static List<StudentDTO> GetAllStudents()
         {
             return StudentData.GetAllStudents();
@@ -51,6 +59,24 @@ namespace StudentAPIBusinessLayer
 
             else
                 return null;
+        }
+
+        public bool Save()
+        {
+            switch (Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewStudent())
+                    {
+                        Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                        return false;
+
+                default:
+                    return false;
+            }
         }
     }
 }

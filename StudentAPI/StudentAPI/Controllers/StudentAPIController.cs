@@ -91,14 +91,18 @@ namespace StudentAPI.Controllers
         [HttpPost("AddNewStudent", Name = "AddNewStudent")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<StudentAPI.Model.Student> AddNewStudent(StudentAPI.Model.Student newStudent)
+        public ActionResult<StudentDTO> AddNewStudent(StudentDTO newStudent)
         {
             if (newStudent == null || string.IsNullOrEmpty(newStudent.Name) || newStudent.Age < 0 || newStudent.Grade < 0)
                 return BadRequest("Invalid Student Data!");
 
-            newStudent.ID = StudentRepository.StudentList.Count > 0 ? StudentRepository.StudentList.Max(student => student.ID) + 1 : 1;
+            // newStudent.ID = StudentRepository.StudentList.Count > 0 ? StudentRepository.StudentList.Max(student => student.ID) + 1 : 1;
+            // StudentRepository.StudentList.Add(newStudent);
 
-            StudentRepository.StudentList.Add(newStudent);
+            StudentAPIBusinessLayer.Student student = new StudentAPIBusinessLayer.Student(newStudent);
+            student.Save();
+
+            newStudent.ID = student.ID;
 
             return CreatedAtRoute("GetStudentByID", new { ID = newStudent.ID }, newStudent);
         }

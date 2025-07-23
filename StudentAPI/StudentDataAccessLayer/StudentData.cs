@@ -134,5 +134,27 @@ namespace StudentDataAccessLayer
                 }
             }
         }
+
+        public static int AddNewStudent(StudentDTO sDTO)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                using (SqlCommand command = new SqlCommand("SP_AddStudent", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Name", sDTO.Name);
+                    command.Parameters.AddWithValue("@Age", sDTO.Age);
+                    command.Parameters.AddWithValue("@Grade", sDTO.Grade);
+                    
+                    var OutputIdParam = new SqlParameter("@NewStudentId", SqlDbType.Int) { Direction = ParameterDirection.Output };
+                    command.Parameters.Add(OutputIdParam);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+
+                    return (int)OutputIdParam.Value;
+                }
+            }
+        }
     }
 }
