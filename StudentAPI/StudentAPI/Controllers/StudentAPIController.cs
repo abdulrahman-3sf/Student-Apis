@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentAPI.Model;
 using StudentAPI.Repository;
+using StudentAPIBusinessLayer;
+using StudentDataAccessLayer;
 
 namespace StudentAPI.Controllers
 {
@@ -13,18 +15,25 @@ namespace StudentAPI.Controllers
         [HttpGet("All", Name = "GetAllStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<Student>> GetAllStudents()
+        public ActionResult<IEnumerable<StudentDTO>> GetAllStudents()
         {
-            if (StudentRepository.StudentList.Count == 0)
+            //if (StudentRepository.StudentList.Count == 0)
+            //    return NotFound("No Students Found!");
+
+            //return Ok(StudentRepository.StudentList);
+
+            List<StudentDTO> StudentsList = StudentAPIBusinessLayer.Student.GetAllStudents();
+
+            if (StudentsList.Count == 0 )
                 return NotFound("No Students Found!");
 
-            return Ok(StudentRepository.StudentList);
+            return Ok(StudentsList);
         }
 
         [HttpGet("Passed", Name = "GetPassedStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<Student>> GetPassedStudents()
+        public ActionResult<IEnumerable<StudentAPI.Model.Student>> GetPassedStudents()
         {
             if (StudentRepository.StudentList.Count == 0)
                 return NotFound("No Students Found!");
@@ -53,7 +62,7 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Student> GetStudentByID(int ID)
+        public ActionResult<StudentAPI.Model.Student> GetStudentByID(int ID)
         {
             if (ID < 1)
                 return BadRequest($"Not Accepted ID {ID}");
@@ -69,7 +78,7 @@ namespace StudentAPI.Controllers
         [HttpPost("AddNewStudent", Name = "AddNewStudent")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Student> AddNewStudent(Student newStudent)
+        public ActionResult<StudentAPI.Model.Student> AddNewStudent(StudentAPI.Model.Student newStudent)
         {
             if (newStudent == null || string.IsNullOrEmpty(newStudent.Name) || newStudent.Age < 0 || newStudent.Grade < 0)
                 return BadRequest("Invalid Student Data!");
@@ -85,7 +94,7 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Student> DeleteStudent(int ID)
+        public ActionResult<StudentAPI.Model.Student> DeleteStudent(int ID)
         {
             if (ID < 1)
                 return BadRequest($"Not Accepted ID {ID}");
@@ -103,7 +112,7 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Student> UpdateStudent(int ID, Student updatedStudent)
+        public ActionResult<StudentAPI.Model.Student> UpdateStudent(int ID, StudentAPI.Model.Student updatedStudent)
         {
             if (ID < 1 || updatedStudent == null || string.IsNullOrEmpty(updatedStudent.Name) || updatedStudent.Age < 0 || updatedStudent.Grade < 0)
                 return BadRequest("Invalid Student Data!");
