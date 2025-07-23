@@ -72,17 +72,20 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<StudentAPI.Model.Student> GetStudentByID(int ID)
+        public ActionResult<StudentDTO> GetStudentByID(int ID)
         {
             if (ID < 1)
                 return BadRequest($"Not Accepted ID {ID}");
 
-            var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+            // var student = StudentRepository.StudentList.FirstOrDefault(student => student.ID == ID);
+            StudentAPIBusinessLayer.Student student = StudentAPIBusinessLayer.Student.Find(ID);
 
             if (student == null)
                 return NotFound($"Student with ID {ID} not found!");
 
-            return Ok(student);
+            StudentDTO sDTO = student.sDTO;
+
+            return Ok(sDTO);
         }
 
         [HttpPost("AddNewStudent", Name = "AddNewStudent")]
