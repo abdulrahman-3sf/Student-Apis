@@ -10,15 +10,16 @@ namespace StudentAPIClient
 {
     class Program
     {
-        public class Student
-        {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public int Age { get; set; }
-            public int Grade { get; set; }
-        }
+        static readonly HttpClient httpClient = new HttpClient();
 
-        static HttpClient httpClient = new HttpClient();
+        static async Task Main(string[] args)
+        {
+            httpClient.BaseAddress = new Uri("https://localhost:7258/api/Students/");
+
+            await GetAllStudents();
+
+            await GetPassedStudents();
+        }
 
         static async Task GetAllStudents()
         {
@@ -27,7 +28,7 @@ namespace StudentAPIClient
                 Console.WriteLine("-------------------------------");
                 Console.WriteLine("\nFetching All Students..\n");
 
-                var students = await httpClient.GetFromJsonAsync<List<Student>>("students");
+                var students = await httpClient.GetFromJsonAsync<List<Student>>("All");
 
                 if (students != null)
                     foreach (var student in students)
@@ -39,11 +40,31 @@ namespace StudentAPIClient
             }
         }
 
-        static async Task Main(string[] args)
+        static async Task GetPassedStudents()
         {
-            httpClient.BaseAddress = new Uri("https://localhost:7258/api/Students");
+            try
+            {
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine("\nFetching Passed Students..\n");
 
-            await GetAllStudents();
+                var students = await httpClient.GetFromJsonAsync<List<Student>>("Passed");
+
+                if (students != null)
+                    foreach (var student in students)
+                        Console.WriteLine($"ID: {student.ID}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
         }
+    }
+
+    public class Student
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public int Grade { get; set; }
     }
 }
